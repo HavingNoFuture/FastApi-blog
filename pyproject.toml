@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "fastapi-blog"
+name = "async-fastapi-blog"
 version = "0.1.0"
 description = ""
 authors = ["Alexey Ermilov <alex.erm4@gmail.com>"]
@@ -9,6 +9,12 @@ readme = "README.md"
 python = "^3.12"
 fastapi = "^0.115.8"
 uvicorn = "^0.34.0"
+python-dotenv = "^1.0.1"
+sqlalchemy = "^2.0.38"
+asyncpg = "^0.30.0"
+alembic = "^1.14.1"
+pydantic = "^2.10.6"
+pydantic-settings = "^2.7.1"
 
 
 [build-system]
