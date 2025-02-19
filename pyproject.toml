@@ -17,6 +17,60 @@ pydantic = "^2.10.6"
 pydantic-settings = "^2.7.1"
 
 
+[tool.poetry.group.dev.dependencies]
+isort = "^6.0.0"
+ruff = "^0.9.6"
+black = "^25.1.0"
+pre-commit = "^4.1.0"
+
+
+[tool.black]
+line-length = 120
+target-version = ["py312"]
+skip-string-normalization = true
+
+
+[tool.isort]
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+exclude = [
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"manage.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

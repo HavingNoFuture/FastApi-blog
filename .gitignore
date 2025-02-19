@@ -12,4 +12,4 @@ __pycache__/
 .idea/
 
 .env
-
+.pre-commit-config.yaml
