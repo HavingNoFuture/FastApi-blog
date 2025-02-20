@@ -4,13 +4,17 @@ from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import relationship
 
 from app.config import settings
 from app.db import Base, get_async_session
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
-    pass
+    posts = relationship("Post", back_populates="author")
+
+    def __repr__(self) -> str:
+        return f"User(email={self.email!r}, is_active={self.is_active!r}, is_superuser={self.is_superuser!r}"
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):

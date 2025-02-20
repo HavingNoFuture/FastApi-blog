@@ -1,9 +1,12 @@
 import contextlib
 
+from fastapi import Depends
 from fastapi_users.exceptions import UserAlreadyExists
+from fastapi_users.schemas import BaseUser
 
 from app.db import get_async_session
 from app.models.users import get_user_db, get_user_manager
+from app.routes.auth import fastapi_users_component
 from app.schemas.users import UserCreate
 
 get_async_session_context = contextlib.asynccontextmanager(get_async_session)
@@ -24,3 +27,7 @@ async def create_user(email: str, password: str, is_superuser: bool = False, is_
             return user
     except UserAlreadyExists:
         raise
+
+
+def get_current_user(user: BaseUser = Depends(fastapi_users_component.current_user())):
+    return user
