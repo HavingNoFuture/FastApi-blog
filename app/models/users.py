@@ -12,6 +12,7 @@ from app.db import Base, get_async_session
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
     posts = relationship("Post", back_populates="author")
+    comments = relationship("Comment", back_populates="author")
 
     def __repr__(self) -> str:
         return f"User(email={self.email!r}, is_active={self.is_active!r}, is_superuser={self.is_superuser!r}"

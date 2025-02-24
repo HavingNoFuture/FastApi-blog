@@ -16,6 +16,7 @@ alembic = "^1.14.1"
 pydantic = "^2.10.6"
 pydantic-settings = "^2.7.1"
 fastapi-users = {extras = ["sqlalchemy"], version = "^14.0.1"}
+pytz = "^2025.1"
 
 
 [tool.poetry.group.dev.dependencies]

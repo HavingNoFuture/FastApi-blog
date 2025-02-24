@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.params import Query
 from sqlalchemy import desc, select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -9,10 +8,11 @@ from app.db import get_async_session
 from app.models import Post, User
 from app.schemas.posts import PostCreateScheme, PostReadScheme, PostUpdateScheme
 from app.services.users import get_current_user
-from app.urls import API_URL
+from app.services.utils import create_object
+from app.urls import POST_URL
 
 posts_router = APIRouter(
-    prefix=API_URL + "/posts",
+    prefix=POST_URL,
     tags=["posts"],
 )
 
@@ -23,17 +23,8 @@ async def create_post(
     db_session: AsyncSession = Depends(get_async_session),
     current_user: User = Depends(get_current_user),
 ):
-    post = Post(header=post_data.header, content=post_data.content, author=current_user)
-    db_session.add(post)
-
-    try:
-        await db_session.commit()
-        await db_session.refresh(post)
-    except IntegrityError as exc:
-        await db_session.rollback()
-        raise HTTPException(status_code=400, detail="Error while creating post") from exc
-
-    return post
+    obj = Post(header=post_data.header, content=post_data.content, author=current_user)
+    return await create_object(obj, db_session)
 
 
 @posts_router.get("/", response_model=list[PostReadScheme])
@@ -65,7 +56,7 @@ async def update_post(
     if post.author_id != current_user.id:
         raise HTTPException(status_code=403, detail="Only author can update")
 
-    for key, value in post_data.dict(exclude_unset=True).items():
+    for key, value in post_data.model_dump(exclude_unset=True).items():
         setattr(post, key, value)
 
     await db_session.commit()
@@ -75,7 +66,9 @@ async def update_post(
 
 @posts_router.delete("/{post_id}", status_code=204)
 async def delete_post(
-    post_id: int, db_session: AsyncSession = Depends(get_async_session), current_user: User = Depends(get_current_user)
+    post_id: int,
+    db_session: AsyncSession = Depends(get_async_session),
+    current_user: User = Depends(get_current_user),
 ):
     post = await async_get_post(post_id, db_session)
 
