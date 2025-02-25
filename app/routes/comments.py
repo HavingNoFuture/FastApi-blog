@@ -12,10 +12,10 @@ from app.routes.posts import async_get_post
 from app.schemas.comments import CommentCreateScheme, CommentReadScheme, CommentReadTreeScheme, CommentUpdateScheme
 from app.services.users import get_current_user
 from app.services.utils import create_object
-from app.urls import POST_URL
+from app.urls import POSTS_URL
 
 comments_router = APIRouter(
-    prefix=POST_URL + "/{post_id}",
+    prefix=POSTS_URL + "/{post_id}",
     tags=["comments"],
 )
 

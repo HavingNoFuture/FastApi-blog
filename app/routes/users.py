@@ -7,10 +7,11 @@ from app.db import get_async_session
 from app.models.users import User, get_user_manager
 from app.routes.auth import fastapi_users_component
 from app.schemas.users import UserRead, UserUpdate
-from app.urls import API_URL
+from app.services.users import get_current_user
+from app.urls import USERS_URL
 
 router_kwargs = {
-    'prefix': API_URL + "/users",
+    'prefix': USERS_URL,
     'tags': ["users"],
 }
 
@@ -23,7 +24,12 @@ user_router.include_router(
 )
 
 
-@user_router.get("/users/")
+@user_router.get("/current_user", response_model=UserRead)
+async def get_current_user(current_user: User = Depends(get_current_user)):
+    return current_user
+
+
+@user_router.get("/")
 async def get_users(session: AsyncSession = Depends(get_async_session)):
     # todo: delete after testing
     result = await session.execute(select(User))

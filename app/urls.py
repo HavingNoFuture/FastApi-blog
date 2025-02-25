@@ -1,4 +1,5 @@
 API_URL = "/api"
 AUTH_URL = API_URL + "/auth"
+USERS_URL = API_URL + "/users"
 LOGIN_URL = AUTH_URL + "/login"
-POST_URL = API_URL + "/posts"
+POSTS_URL = API_URL + "/posts"

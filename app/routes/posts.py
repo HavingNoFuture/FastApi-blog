@@ -9,10 +9,10 @@ from app.models import Post, User
 from app.schemas.posts import PostCreateScheme, PostReadScheme, PostUpdateScheme
 from app.services.users import get_current_user
 from app.services.utils import create_object
-from app.urls import POST_URL
+from app.urls import POSTS_URL
 
 posts_router = APIRouter(
-    prefix=POST_URL,
+    prefix=POSTS_URL,
     tags=["posts"],
 )
 

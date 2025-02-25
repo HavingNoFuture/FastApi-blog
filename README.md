@@ -11,3 +11,4 @@ This is a backend implementation for a blog platform, built with modern technolo
 * **User Authentication** with **JWT** (via fastapi-users) for secure login and user management.
 * **Posts** - Users can create, read, update, and delete posts.
 * **Comments with Hierarchy Tree** - Nested comments (replies) are supported, allowing users to comment on posts and reply to others' comments.
+* **Subscriptions** - Users can subscribe to authors to receive updates on their new posts.

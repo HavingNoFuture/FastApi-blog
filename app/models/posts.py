@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import uuid
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String, Text
@@ -18,7 +19,7 @@ class Post(TimestampModelMixin, Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     header: Mapped[str] = mapped_column(String(120), nullable=False)
     content: Mapped[str] = mapped_column(Text(), nullable=False)
-    author_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    author_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"), nullable=False)
 
     author: Mapped[User] = relationship(back_populates="posts")
 
