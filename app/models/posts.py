@@ -24,6 +24,7 @@ class Post(TimestampModelMixin, Base):
     author: Mapped[User] = relationship(back_populates="posts")
 
     comments = relationship("Comment", back_populates="post")
+    ratings = relationship("Rating", back_populates="post")
 
     def __repr__(self) -> str:
         return f"Post(id={self.id!r}, header={self.header!r}, text={self.content!r})"

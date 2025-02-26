@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 from typing import NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
@@ -11,7 +12,7 @@ from app.models import Comment, User
 from app.routes.posts import async_get_post
 from app.schemas.comments import CommentCreateScheme, CommentReadScheme, CommentReadTreeScheme, CommentUpdateScheme
 from app.services.users import get_current_user
-from app.services.utils import create_object
+from app.services.utils import create_object, delete_object
 from app.urls import POSTS_URL
 
 comments_router = APIRouter(
@@ -50,7 +51,7 @@ async def get_comments(
     id_to_comment = {}
     data = []
     for comment in comments:
-        comment_dict = comment.__dict__
+        comment_dict = jsonable_encoder(comment)
         comment_dict['replies'] = []
 
         id_to_comment[comment_dict['id']] = comment_dict
@@ -94,8 +95,7 @@ async def delete_comment(
 
     check_can_update_comment(comment, current_user)
 
-    await db_session.delete(comment)
-    await db_session.commit()
+    await delete_object(comment, db_session)
 
     return None
 

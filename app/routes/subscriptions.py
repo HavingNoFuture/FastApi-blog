@@ -9,7 +9,7 @@ from app.db import get_async_session
 from app.models import Subscription, User
 from app.schemas.subscriptions import SubscriptionCreateScheme, SubscriptionListScheme, SubscriptionReadScheme
 from app.services.users import get_current_user
-from app.services.utils import create_object
+from app.services.utils import create_object, delete_object
 from app.urls import USERS_URL
 
 subscriptions_router = APIRouter(
@@ -70,7 +70,6 @@ async def delete_subscription(
     if subscription is None:
         raise HTTPException(status_code=404, detail="Subscription not found")
 
-    await db_session.delete(subscription)
-    await db_session.commit()
+    await delete_object(subscription, db_session)
 
     return None

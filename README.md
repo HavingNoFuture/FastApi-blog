@@ -1,4 +1,4 @@
-# Blog - Backend Project
+# FastAPI Blog - Practice Backend Project
 This is a backend implementation for a blog platform, built with modern technologies and designed to support core blog features like user authentication, posts, and comments.
 
 ## 🚀 Technologies
@@ -12,3 +12,11 @@ This is a backend implementation for a blog platform, built with modern technolo
 * **Posts** - Users can create, read, update, and delete posts.
 * **Comments with Hierarchy Tree** - Nested comments (replies) are supported, allowing users to comment on posts and reply to others' comments.
 * **Subscriptions** - Users can subscribe to authors to receive updates on their new posts.
+* **Post Rating** - Users can rate posts (on a scale of 1 to 5).
+
+## Planned Features
+* Post tags
+* Post search
+* Post bookmarks
+* User avatars (File storage support)
+* Notifications (?)

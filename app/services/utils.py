@@ -16,3 +16,8 @@ async def create_object(obj: Base, db_session: AsyncSession):
         raise HTTPException(status_code=400, detail=f"Error while creating {str(obj)}") from exc
 
     return obj
+
+
+async def delete_object(obj: Base, db_session: AsyncSession):
+    await db_session.delete(obj)
+    await db_session.commit()

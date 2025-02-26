@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 from fastapi.params import Query
-from sqlalchemy import desc, select
+from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.db import get_async_session
-from app.models import Post, User
-from app.schemas.posts import PostCreateScheme, PostReadScheme, PostUpdateScheme
+from app.models import Post, Rating, User
+from app.schemas.posts import PostCreateScheme, PostListScheme, PostReadScheme, PostUpdateScheme
 from app.services.users import get_current_user
-from app.services.utils import create_object
+from app.services.utils import create_object, delete_object
 from app.urls import POSTS_URL
 
 posts_router = APIRouter(
@@ -27,16 +28,44 @@ async def create_post(
     return await create_object(obj, db_session)
 
 
-@posts_router.get("/", response_model=list[PostReadScheme])
+@posts_router.get("/", response_model=list[PostListScheme])
 async def get_all_posts(
     order_by: str = Query("-created_at", description="created_at/-created_at"),
     db_session: AsyncSession = Depends(get_async_session),
+    current_user: User = Depends(get_current_user),
 ):
     ordering_field = desc(Post.created_at) if order_by.startswith("-") else Post.created_at
-    query = select(Post).order_by(ordering_field).options(selectinload(Post.author))
+
+    has_voted_subquery = (
+        select(func.count(Rating.id))
+        .where(Rating.post_id == Post.id, Rating.user_id == current_user.id)
+        .correlate(Post)
+        .scalar_subquery()
+    )
+
+    query = (
+        select(
+            Post,
+            func.coalesce(func.avg(Rating.score), 0).label("average_rating"),
+            func.count(Rating.id.distinct()).label("votes_count"),
+            has_voted_subquery.label("has_voted"),
+        )
+        .outerjoin(Rating, Post.id == Rating.post_id)
+        .group_by(Post.id)
+        .order_by(ordering_field)
+        .options(selectinload(Post.author))
+    )
 
     result = await db_session.execute(query)
-    return result.scalars().all()
+    return [
+        {
+            **jsonable_encoder(post),
+            "average_rating": average_rating,
+            "votes_count": votes_count,
+            "has_voted": bool(has_voted),
+        }
+        for post, average_rating, votes_count, has_voted in result.all()
+    ]
 
 
 @posts_router.get("/{post_id}", response_model=PostReadScheme)
@@ -75,8 +104,7 @@ async def delete_post(
     if post.author_id != current_user.id:
         raise HTTPException(status_code=403, detail="Only author can update")
 
-    await db_session.delete(post)
-    await db_session.commit()
+    await delete_object(post, db_session)
 
     return None
 

@@ -21,5 +21,11 @@ class PostReadScheme(PostBaseScheme):
     updated_at: datetime.datetime
 
 
+class PostListScheme(PostReadScheme):
+    average_rating: float
+    votes_count: int
+    has_voted: bool
+
+
 class PostUpdateScheme(PostBaseScheme):
     pass

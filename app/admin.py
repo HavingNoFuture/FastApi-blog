@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from app.models import Comment, Post, Subscription, User
+from app.models import Comment, Post, Rating, Subscription, User
 
 
 class UserAdmin(ModelView, model=User):
@@ -17,4 +17,7 @@ class PostAdmin(ModelView, model=Post):
 
 class CommentAdmin(ModelView, model=Comment):
     column_list = [Comment.id, Comment.author_id]
-    is_async = True
+
+
+class RatingAdmin(ModelView, model=Rating):
+    column_list = [Rating.id, Rating.score, Rating.post_id, Rating.user_id]

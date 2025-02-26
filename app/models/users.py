@@ -28,10 +28,21 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
         cascade="all, delete-orphan",
     )
     subscriptions: Mapped[Subscription] = relationship(
-        "Subscription", foreign_keys="Subscription.user_id", back_populates="user", cascade="all, delete-orphan"
+        "Subscription",
+        foreign_keys="Subscription.user_id",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
     subscribers = relationship(
-        "Subscription", foreign_keys="Subscription.author_id", back_populates="author", cascade="all, delete-orphan"
+        "Subscription",
+        foreign_keys="Subscription.author_id",
+        back_populates="author",
+        cascade="all, delete-orphan",
+    )
+    ratings = relationship(
+        "Rating",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
 
     def __repr__(self) -> str:
